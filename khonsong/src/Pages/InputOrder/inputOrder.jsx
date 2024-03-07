@@ -4,7 +4,7 @@ import DropdownMenu from "../../Component/DropdownMenu/dropdownMenu.jsx";
 
 const InputOrder = () => {
   const [userId, setUserId] = useState("");
-  const [showAdditionalFields, setShowAdditionalFields] = useState(false);
+  const [showConfirmBox, setShowConfirmBox] = useState(false);
   const [dropdowns, setDropdowns] = useState([
     { selectedState: "", isOpen: false },
   ]);
@@ -12,29 +12,29 @@ const InputOrder = () => {
 
   const handleUserIdChange = (event) => {
     setUserId(event.target.value);
-    setShowAdditionalFields(false);
+    setShowConfirmBox(false);
   };
 
   const handleItemClick = (index, state) => {
-    const updatedDropdowns = [...dropdowns];
-    updatedDropdowns[index].selectedState = state;
-    updatedDropdowns[index].isOpen = false;
+    const updated = [...dropdowns];
+    updated[index].selectedState = state;
+    updated[index].isOpen = false;
 
-    setDropdowns(updatedDropdowns);
+    setDropdowns(updated);
   };
 
   const handleToggleDropdown = (index) => {
-    const updatedDropdowns = [...dropdowns];
-    updatedDropdowns[index].isOpen = !updatedDropdowns[index].isOpen;
-    setDropdowns(updatedDropdowns);
+    const updated = [...dropdowns];
+    updated[index].isOpen = !updated[index].isOpen;
+    setDropdowns(updated);
   };
 
   const handleAddDropdown = () => {
     setDropdowns([...dropdowns, { selectedState: "", isOpen: false }]);
   };
 
-  const handleShowAdditionalFields = () => {
-    setShowAdditionalFields(true);
+  const handleShowConfirmBox = () => {
+    setShowConfirmBox(true);
   };
 
   return (
@@ -42,15 +42,15 @@ const InputOrder = () => {
       <label>User ID :</label>
       <input name="User ID" value={userId} onChange={handleUserIdChange} />
 
-      {userId && !showAdditionalFields && (
+      {userId && !showConfirmBox && (
         <div className={styles["confirmation-box"]}>
           <p>Do you want to proceed?</p>
-          <button onClick={handleShowAdditionalFields}>Yes</button>
+          <button onClick={handleShowConfirmBox}>Yes</button>
           <button onClick={() => setUserId("")}>No</button>
         </div>
       )}
 
-      {showAdditionalFields && (
+      {showConfirmBox && (
         <>
           <label>User Name :</label>
           <input name="User ID" disabled />
