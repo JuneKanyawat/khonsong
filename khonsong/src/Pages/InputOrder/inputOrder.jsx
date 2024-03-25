@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styles from "./inputOrder.module.css";
+import "./inputOrder.css";
 import DropdownMenu from "../../Component/DropdownMenu/dropdownMenu.jsx";
 
 const InputOrder = () => {
@@ -48,12 +48,12 @@ const InputOrder = () => {
   };
 
   return (
-    <div className={styles["container"]}>
+    <div className="container">
       <label>User ID :</label>
       <input name="User ID" value={userId} onChange={handleUserIdChange} />
 
       {userId && !showConfirmBox && (
-        <div className={styles["confirmation-box"]}>
+        <div className="confirmation-box">
           <p>Do you want to proceed?</p>
           <button onClick={handleShowConfirmBox}>Yes</button>
           <button onClick={() => setUserId("")}>No</button>
@@ -65,11 +65,11 @@ const InputOrder = () => {
           <label>User Name :</label>
           <input name="User ID" disabled />
 
-          <label className={styles["checkpoint"]}>Checkpoint (s) :</label>
-          <div className={styles["cont"]}>
+          <label className="checkpoint">Checkpoint (s) :</label>
+          <div>
             <div>
               {dropdowns.map((dropdown, index) => (
-                <div key={index} className={styles["option-box"]}>
+                <div key={index} className="cont">
                   <DropdownMenu
                     selectedState={dropdown.selectedState}
                     isOpen={dropdown.isOpen}
@@ -77,10 +77,15 @@ const InputOrder = () => {
                     handleItemClick={(state) => handleItemClick(index, state)}
                     states={states}
                   />
-                  {index !== 0 && (
+
+                  {index === 0 ? (
+                    <button className="add-btn" onClick={handleAddDropdown}>
+                      +
+                    </button>
+                  ) : (
                     <button
                       onClick={() => handleDeleteDropdown(index)}
-                      className={styles["delete-btn"]}
+                      className="delete-btn"
                     >
                       x
                     </button>
@@ -88,14 +93,9 @@ const InputOrder = () => {
                 </div>
               ))}
             </div>
-            {dropdowns.length < 3 && (
-              <button className={styles["add-btn"]} onClick={handleAddDropdown}>
-                +
-              </button>
-            )}
           </div>
-          <button className={styles["btn-cancel"]}>Cancel</button>
-          <button className={styles["btn-next"]}>Next</button>
+          <button className="btn-cancel">Cancel</button>
+          <button className="btn-next">Next</button>
         </>
       )}
     </div>

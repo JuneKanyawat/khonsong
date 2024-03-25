@@ -37,13 +37,25 @@
 .add-btn:hover {
   background-color: #d7d7d7;
 }
+
+.delete-btn {
+  display: block;
+  height: 3rem;
+  width: 3rem;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  background-color: #ffffff;
+}
+
 .cont {
   display: flex;
   column-gap: 1.5rem;
+  margin-bottom: 1.2rem;
 }
 
 .option-box {
-  margin-bottom: 1.2rem;
+  display: flex;
 }
 
 .btn-cancel {
