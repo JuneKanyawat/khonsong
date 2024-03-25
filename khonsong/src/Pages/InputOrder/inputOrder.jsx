@@ -8,6 +8,7 @@ const InputOrder = () => {
   const [dropdowns, setDropdowns] = useState([
     { selectedState: "", isOpen: false },
   ]);
+
   const states = ["Point A", "Point B", "Point C"];
 
   const handleUserIdChange = (event) => {
@@ -19,7 +20,6 @@ const InputOrder = () => {
     const updated = [...dropdowns];
     updated[index].selectedState = state;
     updated[index].isOpen = false;
-
     setDropdowns(updated);
   };
 
@@ -30,7 +30,17 @@ const InputOrder = () => {
   };
 
   const handleAddDropdown = () => {
-    setDropdowns([...dropdowns, { selectedState: "", isOpen: false }]);
+    if (dropdowns.length < 3) {
+      setDropdowns([...dropdowns, { selectedState: "", isOpen: false }]);
+    }
+  };
+
+  const handleDeleteDropdown = (index) => {
+    if (index !== 0) {
+      const updated = [...dropdowns];
+      updated.splice(index, 1);
+      setDropdowns(updated);
+    }
   };
 
   const handleShowConfirmBox = () => {
@@ -63,20 +73,26 @@ const InputOrder = () => {
                   <DropdownMenu
                     selectedState={dropdown.selectedState}
                     isOpen={dropdown.isOpen}
-                    handleToggleDropdown={() => {
-                      handleToggleDropdown(index);
-                    }}
-                    handleItemClick={(state) => {
-                      handleItemClick(index, state);
-                    }}
+                    handleToggleDropdown={() => handleToggleDropdown(index)}
+                    handleItemClick={(state) => handleItemClick(index, state)}
                     states={states}
                   />
+                  {index !== 0 && (
+                    <button
+                      onClick={() => handleDeleteDropdown(index)}
+                      className={styles["delete-btn"]}
+                    >
+                      x
+                    </button>
+                  )}
                 </div>
               ))}
             </div>
-            <button className={styles["add-btn"]} onClick={handleAddDropdown}>
-              +
-            </button>
+            {dropdowns.length < 3 && (
+              <button className={styles["add-btn"]} onClick={handleAddDropdown}>
+                +
+              </button>
+            )}
           </div>
           <button className={styles["btn-cancel"]}>Cancel</button>
           <button className={styles["btn-next"]}>Next</button>
