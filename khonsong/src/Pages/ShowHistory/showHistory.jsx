@@ -1,13 +1,14 @@
 import { useState } from "react";
 import "./showHistory.css";
 import data from "./data.json";
+import { FaCaretDown } from "react-icons/fa6";
+import { FaCaretUp } from "react-icons/fa6";
 
 export default function ShowHistory() {
   return (
     <div>
       <div className="history-container">
-        {console.log(data)}
-        <Accordion data={data.data} />
+        {/* <Accordion data={data.data} /> */}
       </div>
       ;
     </div>
@@ -18,7 +19,7 @@ function Accordion({ data }) {
   const [curOpen, setCurOpen] = useState(null);
   return (
     <div>
-      <h2>History</h2>
+      <h2 className="heading">History</h2>
       <div className="accordion">
         {data.map((el, i) => (
           <AccordionItem
@@ -31,11 +32,11 @@ function Accordion({ data }) {
             key={el.deliverRouteID}
           >
             <div>
-              {el.deliverRouteID}
-              {el.checkpointsList}
-              {el.startTime}
-              {el.finishTime}
-              {el.issuedBy}
+              <p>{el.deliverRouteID}</p>
+              <p>{el.checkpointsList}</p>
+              <p>{el.startTime}</p>
+              <p>{el.finishTime}</p>
+              <p>{el.issuedBy}</p>
             </div>
           </AccordionItem>
         ))}
@@ -67,7 +68,7 @@ function AccordionItem({
         <p>{userId}</p>
         <p>{status}</p>
       </div>
-      <p className="icon">{isOpen ? "-" : "+"}</p>
+      <p className="icon">{isOpen ? <FaCaretUp /> : <FaCaretDown />}</p>
 
       {isOpen && <div className="content-box">{children}</div>}
     </div>
