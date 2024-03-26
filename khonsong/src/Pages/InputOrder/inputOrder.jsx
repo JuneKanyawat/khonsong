@@ -94,7 +94,9 @@ const InputOrder = () => {
               ))}
             </div>
           </div>
-          <button className="btn-cancel">Cancel</button>
+          <button className="btn-cancel" onClick={() => setUserId("")}>
+            Cancel
+          </button>
           <button className="btn-next">Next</button>
         </>
       )}
