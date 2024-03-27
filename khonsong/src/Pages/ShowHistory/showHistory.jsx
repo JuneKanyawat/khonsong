@@ -1,14 +1,28 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./showHistory.css";
-import data from "./data.json";
 import { FaCaretDown } from "react-icons/fa6";
 import { FaCaretUp } from "react-icons/fa6";
+// import data from "./data.json";
+import axios from "axios";
 
 export default function ShowHistory() {
+  const url =
+    "http://ec2-54-82-55-108.compute-1.amazonaws.com:8080/deliverRoute/allDeliver";
+  const [data, setData] = useState([]);
+
+  const fetchInfo = () => {
+    return axios.get(url).then((res) => setData(res.data.data));
+  };
+
+  useEffect(() => {
+    fetchInfo();
+  }, []);
+
   return (
     <div>
       <div className="history-container">
-        {/* <Accordion data={data.data} /> */}
+        {console.log(data)}
+        <Accordion data={data} />
       </div>
       ;
     </div>
@@ -31,13 +45,15 @@ function Accordion({ data }) {
             status={el.deliverStatus}
             key={el.deliverRouteID}
           >
-            <div>
-              <p>{el.deliverRouteID}</p>
-              <p>{el.checkpointsList}</p>
-              <p>{el.startTime}</p>
-              <p>{el.finishTime}</p>
-              <p>{el.issuedBy}</p>
-            </div>
+            <b>Route ID</b>
+            <b>Point</b>
+            <b>Start Time</b>
+            <b>Finish Time</b>
+
+            <p>{el.routeIDs}</p>
+            <p>Point {el.checkpointsList.join(" - Point ")}</p>
+            <p>{formatTime(el.startTime)}</p>
+            <p>{el.finishTime}</p>
           </AccordionItem>
         ))}
       </div>
@@ -52,6 +68,8 @@ function AccordionItem({
   status,
   curOpen,
   onOpen,
+  startTime,
+  finishTime,
   children,
 }) {
   const isOpen = title === curOpen;
@@ -73,4 +91,9 @@ function AccordionItem({
       {isOpen && <div className="content-box">{children}</div>}
     </div>
   );
+}
+
+function formatTime(timeString) {
+  const time = new Date(timeString);
+  return time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
