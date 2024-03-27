@@ -35,7 +35,7 @@
   background: #000;
   grid-column: 3/4;
   grid-row: 1/4;
-  object-fit: cover;
+  background-size: cover;
 }
 .history-text {
   justify-self: start;

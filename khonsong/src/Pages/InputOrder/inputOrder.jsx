@@ -86,9 +86,7 @@ const InputOrder = () => {
           {console.log(data)}
           <div
             className="img"
-            style={{
-              backgroundImage: `url("https://i.postimg.cc/KvwprzTq/8-AA2-EF79-5-A54-4-F45-902-F-11-C0-B2-DC3-DE5.jpg")`,
-            }}
+            style={{ backgroundImage: `url("${data.staffPhoto}")` }}
           ></div>
 
           <label>Staff Name :</label>
