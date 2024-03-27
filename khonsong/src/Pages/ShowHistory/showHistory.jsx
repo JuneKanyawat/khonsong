@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import "./showHistory.css";
 import { FaCaretDown } from "react-icons/fa6";
 import { FaCaretUp } from "react-icons/fa6";
+
 // import data from "./data.json";
 import axios from "axios";
 
@@ -21,7 +22,7 @@ export default function ShowHistory() {
   return (
     <div>
       <div className="history-container">
-        {console.log(data)}
+        {/* {console.log(data)} */}
         <Accordion data={data} />
       </div>
       ;
