@@ -2,35 +2,30 @@ import React, { useState, useEffect } from "react";
 import "./inputOrder.css";
 import DropdownMenu from "../../Component/DropdownMenu/dropdownMenu.jsx";
 import axios from "axios";
-// import { useNavigate } from "react-router-dom";
 
 const InputOrder = () => {
-  const url =
-    "http://ec2-54-82-55-108.compute-1.amazonaws.com:8080/staff/name?staffID=10";
   const [userId, setUserId] = useState("");
   const [showConfirmBox, setShowConfirmBox] = useState(false);
   const [dropdowns, setDropdowns] = useState([
     { selectedState: "", isOpen: false },
   ]);
-
   const states = ["Point A", "Point B", "Point C"];
   const [data, setData] = useState([]);
-
-  // const navigate = useNavigate();
-
-  // const LinktoHistory = () => {
-  //   navigate("/show-history");
-  // };
+  const [routeData, setRouteData] = useState({
+    startTime: "",
+    checkpointsList: [],
+    issuedBy: "",
+  });
 
   useEffect(() => {
-    if (showConfirmBox) {
-      const fetchInfo = () => {
-        axios.get(url).then((res) => setData(res.data.data));
-      };
-
-      fetchInfo();
+    if (showConfirmBox && userId !== "") {
+      const url = `http://ec2-54-82-55-108.compute-1.amazonaws.com:8080/staff/name?staffID=${userId}`;
+      axios
+        .get(url)
+        .then((res) => setData(res.data.data))
+        .catch((error) => console.error("Error fetching data:", error));
     }
-  }, [showConfirmBox, url]);
+  }, [showConfirmBox, userId]);
 
   const handleUserIdChange = (event) => {
     setUserId(event.target.value);
@@ -68,6 +63,37 @@ const InputOrder = () => {
     setShowConfirmBox(true);
   };
 
+  const handleNext = () => {
+    const lastCheckpoint = dropdowns[dropdowns.length - 1].selectedState;
+    const lastAlphabet = lastCheckpoint.charAt(lastCheckpoint.length - 1);
+    const startTime = new Date().toISOString();
+
+    const routeData = {
+      startTime: startTime,
+      checkpointsList: dropdowns.map((dropdown) =>
+        dropdown.selectedState.charAt(dropdown.selectedState.length - 1)
+      ),
+      issuedBy: userId,
+    };
+    alert(JSON.stringify(routeData));
+    console.log(routeData);
+    axios
+      .post(
+        "http://ec2-54-82-55-108.compute-1.amazonaws.com:8080/deliverRoute/create",
+        routeData
+      )
+      .then((response) => {
+        console.log("Route created successfully:", response.data);
+
+        setUserId("");
+        setDropdowns([{ selectedState: "", isOpen: false }]);
+        setShowConfirmBox(false);
+      })
+      .catch((error) => {
+        console.error("Error creating route:", error);
+      });
+  };
+
   return (
     <div className="container">
       <label>Staff ID :</label>
@@ -83,17 +109,15 @@ const InputOrder = () => {
 
       {showConfirmBox && (
         <>
-          {console.log(data)}
+          {/* {console.log(data)} */}
           <div
             className="img"
             style={{ backgroundImage: `url("${data.staffPhoto}")` }}
           ></div>
 
           <label>Staff Name :</label>
-          <p className="staff-name">
-            {`${data.staffFname} ${data.staffLname}`}
-          </p>
-          <label className="checkpoint">Checkpoint (s) :</label>
+          <p className="staff-name">{`${data.staffFname} ${data.staffLname}`}</p>
+          <label className="checkpoint">Checkpoint(s):</label>
           <div>
             <div>
               {dropdowns.map((dropdown, index) => (
@@ -123,15 +147,13 @@ const InputOrder = () => {
             </div>
           </div>
 
-          {/* <button onClick={LinktoHistory} className="hero-btn share">
-            History
-          </button> */}
-
           <p className="history-text">History</p>
           <button className="btn-cancel" onClick={() => setUserId("")}>
             Cancel
           </button>
-          <button className="btn-next">Next</button>
+          <button className="btn-next" onClick={handleNext}>
+            Next
+          </button>
         </>
       )}
     </div>
