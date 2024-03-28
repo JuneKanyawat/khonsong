@@ -1,8 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./inputOrder.css";
 import DropdownMenu from "../../Component/DropdownMenu/dropdownMenu.jsx";
+import axios from "axios";
+// import { useNavigate } from "react-router-dom";
 
 const InputOrder = () => {
+  const url =
+    "http://ec2-54-82-55-108.compute-1.amazonaws.com:8080/staff/name?staffID=10";
   const [userId, setUserId] = useState("");
   const [showConfirmBox, setShowConfirmBox] = useState(false);
   const [dropdowns, setDropdowns] = useState([
@@ -10,6 +14,23 @@ const InputOrder = () => {
   ]);
 
   const states = ["Point A", "Point B", "Point C"];
+  const [data, setData] = useState([]);
+
+  // const navigate = useNavigate();
+
+  // const LinktoHistory = () => {
+  //   navigate("/show-history");
+  // };
+
+  useEffect(() => {
+    if (showConfirmBox) {
+      const fetchInfo = () => {
+        axios.get(url).then((res) => setData(res.data.data));
+      };
+
+      fetchInfo();
+    }
+  }, [showConfirmBox, url]);
 
   const handleUserIdChange = (event) => {
     setUserId(event.target.value);
@@ -49,7 +70,7 @@ const InputOrder = () => {
 
   return (
     <div className="container">
-      <label>User ID :</label>
+      <label>Staff ID :</label>
       <input name="User ID" value={userId} onChange={handleUserIdChange} />
 
       {userId && !showConfirmBox && (
@@ -62,9 +83,16 @@ const InputOrder = () => {
 
       {showConfirmBox && (
         <>
-          <label>User Name :</label>
-          <input name="User ID" disabled />
+          {console.log(data)}
+          <div
+            className="img"
+            style={{ backgroundImage: `url("${data.staffPhoto}")` }}
+          ></div>
 
+          <label>Staff Name :</label>
+          <p className="staff-name">
+            {`${data.staffFname} ${data.staffLname}`}
+          </p>
           <label className="checkpoint">Checkpoint (s) :</label>
           <div>
             <div>
@@ -94,6 +122,12 @@ const InputOrder = () => {
               ))}
             </div>
           </div>
+
+          {/* <button onClick={LinktoHistory} className="hero-btn share">
+            History
+          </button> */}
+
+          <p className="history-text">History</p>
           <button className="btn-cancel" onClick={() => setUserId("")}>
             Cancel
           </button>
