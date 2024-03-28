@@ -1,5 +1,6 @@
 import InputOrder from "../src/Pages/InputOrder/inputOrder.jsx";
 import ShowHistory from "../src/Pages/ShowHistory/showHistory.jsx";
+import DeliveryInfo from "../src/Pages/DeliveryInfo/deliveryInfo.jsx";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import "./App.css";
 
@@ -12,7 +13,8 @@ function App() {
           <Route exact path="/show-history" element={<ShowHistory />} />
         </Routes>
       </BrowserRouter> */}
-      <InputOrder />
+      {/* <InputOrder /> */}
+      <DeliveryInfo />
     </>
   );
 }
