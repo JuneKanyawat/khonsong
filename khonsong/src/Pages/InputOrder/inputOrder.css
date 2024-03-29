@@ -17,7 +17,7 @@
   height: 3rem;
   line-height: 28px;
   padding: 0 1rem;
-  padding-left: 2.5rem;
+  padding-left: 2rem;
   border: 1px solid #dddddd;
   border-radius: 8px;
   outline: none;
@@ -47,7 +47,7 @@ input:hover {
   border: 1px solid #dddddd;
   border-radius: 8px;
   outline: none;
-  padding: 0.6rem 3rem;
+  padding: 0.6rem 2rem;
   background-color: #dddddd;
 }
 
@@ -66,11 +66,35 @@ input:hover {
   background-size: cover;
   background-position: center;
 }
+
 .history-text {
   justify-self: start;
-  padding: 0 0 0 1rem;
-  font-style: italic;
+  padding: 1rem;
+  position: relative;
 }
+
+.history-text:hover {
+  text-decoration: underline;
+}
+
+.history-text::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-top: solid 1.5px #000000;
+  border-right: solid 1.5px #000000;
+  border-radius: 2px;
+  position: absolute;
+  top: 53%;
+  left: 90%;
+  transform: translateY(-50%) rotate(45deg);
+  transition: transform 0.4s;
+}
+
+.history-text:hover::before {
+  transform: translateX(4px) translateY(-50%) rotate(45deg);
+}
+
 .checkpoint {
   align-self: start;
 }
@@ -117,7 +141,7 @@ input:hover {
 .btn-cancel {
   border: none;
   border-radius: 10px;
-  padding: 0.6rem 1.6rem;
+  padding: 0.8rem 2.6rem;
   justify-self: start;
   color: #ffffff;
   background-color: #c40505;
@@ -128,7 +152,7 @@ input:hover {
 .btn-next {
   border: none;
   border-radius: 10px;
-  padding: 0.6rem 1.6rem;
+  padding: 0.8rem 2.6rem;
   justify-self: end;
   color: #ffffff;
   background-color: #7ac405;
