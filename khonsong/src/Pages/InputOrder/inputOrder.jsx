@@ -2,8 +2,14 @@ import React, { useState, useEffect } from "react";
 import "./inputOrder.css";
 import DropdownMenu from "../../Component/DropdownMenu/dropdownMenu.jsx";
 import axios from "axios";
+import { useNavigate } from 'react-router-dom';
 
 const InputOrder = () => {
+  const navigate = useNavigate();
+  const LinktoHistory = () => {
+    navigate('/history');
+  };
+
   const [userId, setUserId] = useState("");
   const [showConfirmBox, setShowConfirmBox] = useState(false);
   const [dropdowns, setDropdowns] = useState([
@@ -97,6 +103,7 @@ const InputOrder = () => {
       )
       .then((response) => {
         console.log("Route created successfully:", response.data);
+        navigate('/status')
 
         setUserId("");
         setDropdowns([{ selectedState: "", isOpen: false }]);
@@ -178,7 +185,7 @@ const InputOrder = () => {
             </div>
           </div>
 
-          <p className="history-text">History</p>
+          <p className="history-text" onClick={LinktoHistory}>History</p>
           <button className="btn-cancel" onClick={handleCancel}>
             Cancel
           </button>

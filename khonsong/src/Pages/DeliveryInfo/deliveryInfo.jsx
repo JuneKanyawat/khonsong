@@ -2,8 +2,11 @@ import React, { useState, useEffect } from "react";
 import "./deliveryInfo.css";
 import Datatable from 'react-data-table-component'
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const DeliveryInfo = () => {
+  const navigate = useNavigate();
+
   const [data, setData] = useState(null);
   const [restart, setRestart] = useState(null);
 
@@ -28,6 +31,10 @@ const DeliveryInfo = () => {
         setRestart(restartValue); 
         console.log(newData);
         console.log(restartValue);
+
+        if (restartValue) {
+          navigate('/');
+        }
 
       } catch (error) {
         console.error("Error fetching data: ", error);

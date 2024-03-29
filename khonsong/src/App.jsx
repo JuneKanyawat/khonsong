@@ -7,14 +7,15 @@ import "./App.css";
 function App() {
   return (
     <>
-      {/* <BrowserRouter>
+      <BrowserRouter>
         <Routes>
           <Route exact path="/" element={<InputOrder />} />
-          <Route exact path="/show-history" element={<ShowHistory />} />
+          <Route exact path="/status" element={<DeliveryInfo />} />
+          <Route exact path="/history" element={<ShowHistory />} />
         </Routes>
-      </BrowserRouter> */}
+      </BrowserRouter>
       {/* <InputOrder /> */}
-      <DeliveryInfo />
+      {/* <DeliveryInfo /> */}
       {/* <ShowHistory /> */}
     </>
   );
