@@ -59,6 +59,7 @@ function Accordion({ data, LinktoOrder }) {
     </div>
   );
 }
+
 function AccordionItem({
   title,
   checkPoint,
@@ -69,6 +70,9 @@ function AccordionItem({
   onOpen,
 }) {
   const [fetchedRouteData, setFetchedRouteData] = useState(null);
+  const [showImage, setShowImage] = useState(false);
+  const [selectedImage, setSelectedImage] = useState("");
+
   const isOpen = title === curOpen;
 
   function handleToggle() {
@@ -85,6 +89,15 @@ function AccordionItem({
         });
     }
     onOpen(isOpen ? null : title);
+  }
+
+  function handleImageClick(imageData) {
+    setSelectedImage(imageData);
+    setShowImage(true);
+  }
+
+  function handleCloseImage() {
+    setShowImage(false);
   }
 
   return (
@@ -108,7 +121,7 @@ function AccordionItem({
             <b>Received Time</b>
             <b>Staff</b>
             <b>Checkpoint</b>
-            <b>Status</b>
+            <b>Image</b>
           </div>
           {fetchedRouteData.map((item) => (
             <div key={item.routeID} className="line-box ">
@@ -117,14 +130,36 @@ function AccordionItem({
               <p>{formatTime(item.receivedTime)}</p>
               <p>{item.staffName}</p>
               <p>{item.checkpoint}</p>
-              <p>{item.routeStatus}</p>
+              {/* Replace img tag with button */}
+              <button
+                className="img-url"
+                onClick={() => handleImageClick(item.receivedImage)}
+              >
+                View
+              </button>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* Modal to display the image */}
+      {showImage && (
+        <div className="modal">
+          <div className="modal-content">
+            <span className="close" onClick={handleCloseImage}>
+              &times;
+            </span>
+            <img
+              src={`data:image/jpeg;base64,${selectedImage}`}
+              alt="Received"
+            />
+          </div>
         </div>
       )}
     </div>
   );
 }
+
 function formatTime(timeString) {
   const time = new Date(timeString);
   return time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
