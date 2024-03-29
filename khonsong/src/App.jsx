@@ -14,8 +14,8 @@ function App() {
         </Routes>
       </BrowserRouter> */}
       {/* <InputOrder /> */}
-      {/* <DeliveryInfo /> */}
-      <ShowHistory />
+      <DeliveryInfo />
+      {/* <ShowHistory /> */}
     </>
   );
 }

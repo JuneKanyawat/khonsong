@@ -5,44 +5,38 @@ import axios from "axios";
 
 const DeliveryInfo = () => {
   const [data, setData] = useState(null);
+  const [restart, setRestart] = useState(null);
 
   useEffect(() => {
     console.log("Fetching data...");
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://ec2-54-82-55-108.compute-1.amazonaws.com:8080/deliverRoute/currentDeliver?deliverRouteID=1");
-        const newData = response.data.data.routesData.map(item => ({
+        const response1 = await axios.get("http://ec2-54-82-55-108.compute-1.amazonaws.com:8080/deliverRoute/currentDeliver?deliverRouteID=1");
+        const response2 = await axios.get("http://ec2-54-82-55-108.compute-1.amazonaws.com:8080/deliverRoute/restart?deliverRouteID=1");
+
+        const newData = response1.data.data.routesData.map(item => ({
           ...item,
           arrivedTime: item.arrivedTime || '-',
           receivedTime: item.receivedTime || '-',
           staffName: item.staffName || '-',
           receivedImage: item.receivedImage || '-',
         }));
+
+        const restartValue = response2.data.data.restart;
+
         setData(newData);
+        setRestart(restartValue); 
         console.log(newData);
+        console.log(restartValue);
+
       } catch (error) {
         console.error("Error fetching data: ", error);
       }
     };
-
     fetchData();
-
     const intervalId = setInterval(fetchData, 2000);
-
     return () => clearInterval(intervalId);
   }, []);
-
-  function sameData(a, b) {
-    if (a === b) return true;
-    if (a == null || b == null) return false;
-    if (a.length !== b.length) return false;
-  
-    for (let i = 0; i < a.length; i++) {
-      if (a[i] !== b[i]) return false;
-    }
-  
-    return true;
-  }
 
   const categories = [
     {name: 'Checkpoint', selector: row => row.checkpoint || '-'}, 
