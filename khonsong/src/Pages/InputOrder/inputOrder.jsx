@@ -20,7 +20,7 @@ const InputOrder = () => {
   const [staffValid, setStaffValid] = useState(true);
 
   useEffect(() => {
-    if (showConfirmBox && userId !== "") {
+    if (userId !== "") {
       const url = `http://ec2-54-82-55-108.compute-1.amazonaws.com:8080/staff/name?staffID=${userId}`;
       axios
         .get(url)
@@ -144,14 +144,14 @@ const InputOrder = () => {
         </div>
       )}
 
-      {!staffValid && (
+      {!staffValid && showConfirmBox && (
         <div className="popup-box">
           <p>No staff found</p>
           <button onClick={handleClear}>Clear</button>
         </div>
       )}
 
-      {showConfirmBox && staffValid && (
+      {staffValid && showConfirmBox && (
         <>
           <div
             className="img"

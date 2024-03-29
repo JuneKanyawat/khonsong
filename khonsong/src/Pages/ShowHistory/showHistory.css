@@ -16,8 +16,12 @@
 }
 
 .heading {
+  /* display: flex; */
+  margin-left: 1.6rem;
+}
+.span {
   display: flex;
-  margin-bottom: 1.6rem;
+  align-items: center;
 }
 
 .item {
@@ -30,6 +34,10 @@
   display: grid;
   grid-template-columns: auto 1fr auto;
   row-gap: 2.4rem;
+}
+
+.closeing:hover {
+  background-color: #f6f6f6;
 }
 
 .number {
@@ -46,10 +54,13 @@
   justify-items: start;
   align-items: start;
 }
-
+.name {
+  padding: 0 6rem;
+  justify-self: start;
+}
 .text {
-  display: flex;
-  justify-content: space-around;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
   align-items: center;
 }
 

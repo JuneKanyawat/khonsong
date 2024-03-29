@@ -2,7 +2,7 @@
   padding: 2.6rem;
   /* box-shadow: 0 2.4rem 4.8rem rgba(0, 0, 0, 0.075); */
   display: grid;
-  grid-template-columns: 2fr 2fr 1fr;
+  grid-template-columns: 1fr 1fr auto;
   column-gap: 3rem;
   row-gap: 0.8rem;
   background: #ffffff;
@@ -65,6 +65,7 @@ input:hover {
   border-radius: 10px;
   background-size: cover;
   background-position: center;
+  margin-right: 2.6rem;
 }
 
 .history-text {
