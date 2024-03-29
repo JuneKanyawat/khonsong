@@ -8,6 +8,7 @@
   align-items: center;
   justify-content: start;
 }
+
 .accordion {
   /* width: 700px; */
   /* margin: 100px auto; */
@@ -15,13 +16,18 @@
   flex-direction: column;
 }
 
+.Head {
+  display: flex;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+.Head p:hover {
+  transform: translateX(-50%);
+  transition: transform 0.4s;
+}
 .heading {
   /* display: flex; */
   margin-left: 1.6rem;
-}
-.span {
-  display: flex;
-  align-items: center;
 }
 
 .item {

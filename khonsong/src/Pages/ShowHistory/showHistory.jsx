@@ -36,7 +36,7 @@ function Accordion({ data, LinktoOrder }) {
 
   return (
     <div>
-      <div className="span">
+      <div className="Head">
         <p onClick={LinktoOrder}>
           <FaArrowLeft />
         </p>
