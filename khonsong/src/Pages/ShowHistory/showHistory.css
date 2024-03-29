@@ -70,4 +70,5 @@
   grid-column: -3 / -2;
   display: grid;
   grid-template-columns: 1fr;
+  row-gap: 2rem;
 }
