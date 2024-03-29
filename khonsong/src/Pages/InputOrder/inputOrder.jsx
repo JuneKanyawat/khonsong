@@ -147,9 +147,7 @@ const InputOrder = () => {
           ></div>
 
           <label>Staff Name :</label>
-          <p className="staff-name">
-            {`${data.staffFname} ${data.staffLname}`}
-          </p>
+          <p className="staff-name">{`${data.staffFname} ${data.staffLname}`}</p>
           <label className="checkpoint">Checkpoint(s) :</label>
           <div>
             <div>
@@ -184,9 +182,12 @@ const InputOrder = () => {
           <button className="btn-cancel" onClick={handleCancel}>
             Cancel
           </button>
-          <button className="btn-next" onClick={handleNext}>
-            Next
-          </button>
+          {/* Conditionally render the "Next" button */}
+          {dropdowns.some((dropdown) => dropdown.selectedState !== "") && (
+            <button className="btn-next" onClick={handleNext}>
+              Next
+            </button>
+          )}
         </>
       )}
     </div>

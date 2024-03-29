@@ -13,9 +13,9 @@ function App() {
           <Route exact path="/show-history" element={<ShowHistory />} />
         </Routes>
       </BrowserRouter> */}
-      {/* <InputOrder /> */}
+      <InputOrder />
       {/* <DeliveryInfo /> */}
-      <ShowHistory />
+      {/* <ShowHistory /> */}
     </>
   );
 }
