@@ -89,15 +89,15 @@ function AccordionItem({
       {isOpen && fetchedRouteData && (
         <div className="his-box">
           <div className="line-box">
-            <p>hi</p>
-            <p>hi</p>
-            <p>hi</p>
-            <p>hi</p>
-            <p>hi</p>
-            <p>hi</p>
+            <b>Route ID</b>
+            <b>Arrived Time</b>
+            <b>Received Time</b>
+            <b>Staff</b>
+            <b>Checkpoint</b>
+            <b>Status</b>
           </div>
           {fetchedRouteData.map((item) => (
-            <div key={item.routeID} className="line-box">
+            <div key={item.routeID} className="line-box ">
               <p>{item.routeID}</p>
               <p>{formatTime(item.arrivedTime)}</p>
               <p>{formatTime(item.receivedTime)}</p>
