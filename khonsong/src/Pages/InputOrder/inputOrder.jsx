@@ -10,26 +10,33 @@ const InputOrder = () => {
     { selectedState: "", isOpen: false },
   ]);
   const states = ["Point A", "Point B", "Point C"];
-  const [data, setData] = useState([]);
-  const [routeData, setRouteData] = useState({
-    startTime: "",
-    checkpointsList: [],
-    issuedBy: "",
-  });
+  const [data, setData] = useState({});
+  const [staffValid, setStaffValid] = useState(true);
 
   useEffect(() => {
     if (showConfirmBox && userId !== "") {
       const url = `http://ec2-54-82-55-108.compute-1.amazonaws.com:8080/staff/name?staffID=${userId}`;
       axios
         .get(url)
-        .then((res) => setData(res.data.data))
-        .catch((error) => console.error("Error fetching data:", error));
+        .then((res) => {
+          if (res.data.data) {
+            setData(res.data.data);
+            setStaffValid(true);
+          } else {
+            setStaffValid(false);
+          }
+        })
+        .catch((error) => {
+          console.error("Error fetching data:", error);
+          setStaffValid(false);
+        });
     }
   }, [showConfirmBox, userId]);
 
   const handleUserIdChange = (event) => {
     setUserId(event.target.value);
     setShowConfirmBox(false);
+    setStaffValid(true); // Reset staff validity when user changes the ID
   };
 
   const handleItemClick = (index, state) => {
@@ -64,18 +71,24 @@ const InputOrder = () => {
   };
 
   const handleNext = () => {
+    if (!staffValid) {
+      alert("No staff found with the given ID.");
+      return;
+    }
+
     const lastCheckpoint = dropdowns[dropdowns.length - 1].selectedState;
     const lastAlphabet = lastCheckpoint.charAt(lastCheckpoint.length - 1);
     const startTime = new Date().toISOString();
 
     const routeData = {
       startTime: startTime,
-      checkpointsList: dropdowns.map((dropdown) =>
-        dropdown.selectedState.charAt(dropdown.selectedState.length - 1)
-      ),
+      checkpointsList: dropdowns
+        .map((dropdown) =>
+          dropdown.selectedState.charAt(dropdown.selectedState.length - 1)
+        )
+        .sort(),
       issuedBy: userId,
     };
-    alert(JSON.stringify(routeData));
     console.log(routeData);
     axios
       .post(
@@ -94,6 +107,18 @@ const InputOrder = () => {
       });
   };
 
+  const handleCancel = () => {
+    setUserId("");
+    setDropdowns([{ selectedState: "", isOpen: false }]);
+    setShowConfirmBox(false);
+  };
+
+  const handleClear = () => {
+    setUserId("");
+    setStaffValid(true);
+    setShowConfirmBox(false);
+  };
+
   return (
     <div className="container">
       <label>Staff ID :</label>
@@ -107,17 +132,25 @@ const InputOrder = () => {
         </div>
       )}
 
-      {showConfirmBox && (
+      {!staffValid && (
+        <div className="popup-box">
+          <p>No staff found</p>
+          <button onClick={handleClear}>Clear</button>
+        </div>
+      )}
+
+      {showConfirmBox && staffValid && (
         <>
-          {/* {console.log(data)} */}
           <div
             className="img"
             style={{ backgroundImage: `url("${data.staffPhoto}")` }}
           ></div>
 
           <label>Staff Name :</label>
-          <p className="staff-name">{`${data.staffFname} ${data.staffLname}`}</p>
-          <label className="checkpoint">Checkpoint(s):</label>
+          <p className="staff-name">
+            {`${data.staffFname} ${data.staffLname}`}
+          </p>
+          <label className="checkpoint">Checkpoint(s) :</label>
           <div>
             <div>
               {dropdowns.map((dropdown, index) => (
@@ -148,7 +181,7 @@ const InputOrder = () => {
           </div>
 
           <p className="history-text">History</p>
-          <button className="btn-cancel" onClick={() => setUserId("")}>
+          <button className="btn-cancel" onClick={handleCancel}>
             Cancel
           </button>
           <button className="btn-next" onClick={handleNext}>

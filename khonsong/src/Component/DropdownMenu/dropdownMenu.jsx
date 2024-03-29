@@ -1,5 +1,5 @@
 import React from "react";
-import styles from "./dropdownMenu.module.css";
+import "./dropdownMenu.css";
 
 const DropdownMenu = ({
   selectedState,
@@ -10,11 +10,11 @@ const DropdownMenu = ({
 }) => {
   return (
     <div>
-      <div className={styles["styled-dropdown"]} onClick={handleToggleDropdown}>
+      <div className="styled-dropdown" onClick={handleToggleDropdown}>
         {selectedState || "Select point"}
       </div>
       {isOpen && (
-        <ul className={styles["value-list"]}>
+        <ul className="value-list">
           {states.map((state, index) => (
             <li key={index} onClick={() => handleItemClick(state)}>
               {state}

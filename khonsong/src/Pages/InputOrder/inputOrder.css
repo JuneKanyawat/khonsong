@@ -78,7 +78,13 @@
 .option-box {
   display: flex;
 }
+.popup-box {
+  display: flex;
+}
 
+.popup-box p {
+  margin-right: 1rem;
+}
 .btn-cancel {
   border: none;
   border-radius: 10px;

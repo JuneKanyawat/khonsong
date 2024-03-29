@@ -1,9 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Children } from "react";
 import "./showHistory.css";
-import { FaCaretDown } from "react-icons/fa6";
-import { FaCaretUp } from "react-icons/fa6";
-
-// import data from "./data.json";
+import { FaCaretDown, FaCaretUp } from "react-icons/fa";
 import axios from "axios";
 
 export default function ShowHistory() {
@@ -22,16 +19,15 @@ export default function ShowHistory() {
   return (
     <div>
       <div className="history-container">
-        {/* {console.log(data)} */}
         <Accordion data={data} />
       </div>
-      ;
     </div>
   );
 }
 
 function Accordion({ data }) {
   const [curOpen, setCurOpen] = useState(null);
+
   return (
     <div>
       <h2 className="heading">History</h2>
@@ -44,38 +40,39 @@ function Accordion({ data }) {
             checkPoint={el.checkpointsList}
             userId={el.issuedBy}
             status={el.deliverStatus}
+            routeIDs={el.routeIDs}
             key={el.deliverRouteID}
-          >
-            <b>Route ID</b>
-            <b>Point</b>
-            <b>Start Time</b>
-            <b>Finish Time</b>
-
-            <p>{el.routeIDs}</p>
-            <p>Point {el.checkpointsList.join(" - Point ")}</p>
-            <p>{formatTime(el.startTime)}</p>
-            <p>{el.finishTime}</p>
-          </AccordionItem>
+          ></AccordionItem>
         ))}
       </div>
     </div>
   );
 }
-
 function AccordionItem({
   title,
   checkPoint,
   userId,
   status,
+  routeIDs,
   curOpen,
   onOpen,
-  startTime,
-  finishTime,
-  children,
 }) {
+  const [fetchedRouteData, setFetchedRouteData] = useState(null);
   const isOpen = title === curOpen;
+
   function handleToggle() {
-    // setIsOpen((isOpen) => !isOpen);
+    if (!isOpen) {
+      axios
+        .get(
+          `http://ec2-54-82-55-108.compute-1.amazonaws.com:8080/route/routeForDeliver?inputRoutes=${routeIDs}`
+        )
+        .then((response) => {
+          setFetchedRouteData(response.data.data);
+        })
+        .catch((error) => {
+          console.error("Error fetching route data:", error);
+        });
+    }
     onOpen(isOpen ? null : title);
   }
 
@@ -89,11 +86,31 @@ function AccordionItem({
       </div>
       <p className="icon">{isOpen ? <FaCaretUp /> : <FaCaretDown />}</p>
 
-      {isOpen && <div className="content-box">{children}</div>}
+      {isOpen && fetchedRouteData && (
+        <div className="his-box">
+          <div className="line-box">
+            <p>hi</p>
+            <p>hi</p>
+            <p>hi</p>
+            <p>hi</p>
+            <p>hi</p>
+            <p>hi</p>
+          </div>
+          {fetchedRouteData.map((item) => (
+            <div key={item.routeID} className="line-box">
+              <p>{item.routeID}</p>
+              <p>{formatTime(item.arrivedTime)}</p>
+              <p>{formatTime(item.receivedTime)}</p>
+              <p>{item.staffName}</p>
+              <p>{item.checkpoint}</p>
+              <p>{item.routeStatus}</p>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
-
 function formatTime(timeString) {
   const time = new Date(timeString);
   return time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });

@@ -62,3 +62,12 @@
 .open .title {
   color: #ffd166;
 } */
+.line-box {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+}
+.his-box {
+  grid-column: -3 / -2;
+  display: grid;
+  grid-template-columns: 1fr;
+}
