@@ -3,12 +3,14 @@ import "./deliveryInfo.css";
 import Datatable from 'react-data-table-component'
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Swal from 'sweetalert2'
 
 const DeliveryInfo = () => {
   const navigate = useNavigate();
 
   const [data, setData] = useState(null);
   const [restart, setRestart] = useState(null);
+  const [updateRestart, setUpdateRestart] = useState(false);
 
   useEffect(() => {
     console.log("Fetching data...");
@@ -32,18 +34,35 @@ const DeliveryInfo = () => {
         console.log(newData);
         console.log(restartValue);
 
-        if (restartValue) {
-          navigate('/');
-        }
+        // const allComplete = newData.every(item => item.routeStatus === "complete");}
 
       } catch (error) {
         console.error("Error fetching data: ", error);
       }
     };
+
     fetchData();
     const intervalId = setInterval(fetchData, 2000);
     return () => clearInterval(intervalId);
   }, []);
+
+  const checkRestart = () => {
+    if (!restart) {
+      alert = Swal.fire({
+        title: "Alert!",
+        html: "This alert will stay open until restart is true.",
+        showConfirmButton: false, 
+        didOpen: () => {
+          Swal.showLoading();
+        }
+      });
+    } else {
+      if (alert) {
+        Swal.close();
+        navigate('/');
+      }
+    }
+  };
 
   const categories = [
     {name: 'Checkpoint', selector: row => row.checkpoint || '-'}, 
