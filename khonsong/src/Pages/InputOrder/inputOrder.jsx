@@ -104,6 +104,11 @@ const InputOrder = () => {
       alert("No staff found with the given ID.");
       return;
     }
+    // Check if any dropdown menu is blank
+    if (dropdowns.some((dropdown) => dropdown.selectedState === "")) {
+      alert("Please select a checkpoint for all dropdown menus.");
+      return;
+    }
 
     const lastCheckpoint = dropdowns[dropdowns.length - 1].selectedState;
     const lastAlphabet = lastCheckpoint.charAt(lastCheckpoint.length - 1);
