@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import "./inputOrder.css";
 import DropdownMenu from "../../Component/DropdownMenu/dropdownMenu.jsx";
 import axios from "axios";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 const InputOrder = () => {
   const navigate = useNavigate();
   const LinktoHistory = () => {
-    navigate('/history');
+    navigate("/history");
   };
 
   const [userId, setUserId] = useState("");
@@ -20,7 +20,7 @@ const InputOrder = () => {
   const [staffValid, setStaffValid] = useState(true);
 
   useEffect(() => {
-    if (showConfirmBox && userId !== "") {
+    if (userId !== "") {
       const url = `http://ec2-54-82-55-108.compute-1.amazonaws.com:8080/staff/name?staffID=${userId}`;
       axios
         .get(url)
@@ -103,7 +103,7 @@ const InputOrder = () => {
       )
       .then((response) => {
         console.log("Route created successfully:", response.data);
-        navigate('/status')
+        navigate("/status");
 
         setUserId("");
         setDropdowns([{ selectedState: "", isOpen: false }]);
@@ -129,7 +129,12 @@ const InputOrder = () => {
   return (
     <div className="container">
       <label>Staff ID :</label>
-      <input name="User ID" value={userId} onChange={handleUserIdChange} />
+      <input
+        className="input"
+        name="User ID"
+        value={userId}
+        onChange={handleUserIdChange}
+      />
 
       {userId && !showConfirmBox && (
         <div className="confirmation-box">
@@ -139,14 +144,16 @@ const InputOrder = () => {
         </div>
       )}
 
-      {!staffValid && (
+      {!staffValid && showConfirmBox && (
         <div className="popup-box">
           <p>No staff found</p>
-          <button onClick={handleClear}>Clear</button>
+          <button className="clear-btn" onClick={handleClear}>
+            Clear
+          </button>
         </div>
       )}
 
-      {showConfirmBox && staffValid && (
+      {staffValid && showConfirmBox && (
         <>
           <div
             className="img"
@@ -185,7 +192,9 @@ const InputOrder = () => {
             </div>
           </div>
 
-          <p className="history-text" onClick={LinktoHistory}>History</p>
+          <p className="history-text" onClick={LinktoHistory}>
+            History
+          </p>
           <button className="btn-cancel" onClick={handleCancel}>
             Cancel
           </button>
