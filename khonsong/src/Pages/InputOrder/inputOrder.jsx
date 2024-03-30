@@ -106,7 +106,7 @@ const InputOrder = () => {
     }
     // Check if any dropdown menu is blank
     if (dropdowns.some((dropdown) => dropdown.selectedState === "")) {
-      alert("Please select a checkpoint for all dropdown menus.");
+      alert("Please select all checkpoint for all menus :)");
       return;
     }
 
