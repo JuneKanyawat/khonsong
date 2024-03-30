@@ -1,27 +1,34 @@
-import { useState, useEffect, Children } from "react";
+import { useState, useEffect } from "react";
 import "./showHistory.css";
 import { FaArrowLeft, FaCaretDown, FaCaretUp } from "react-icons/fa";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
 export default function ShowHistory() {
+  // API endpoint URL
   const url =
     "http://ec2-54-82-55-108.compute-1.amazonaws.com:8080/deliverRoute/allDeliver";
+
+  // State variables for data and navigation
   const [data, setData] = useState([]);
   const navigate = useNavigate();
 
+  // Function to navigate back to the main page
   const LinktoOrder = () => {
     navigate("/");
   };
 
+  // Function to fetch data from the API
   const fetchInfo = () => {
     return axios.get(url).then((res) => setData(res.data.data));
   };
 
+  // useEffect hook to fetch data on component mount
   useEffect(() => {
     fetchInfo();
   }, []);
 
+  // Rendering the main component
   return (
     <div>
       <div className="history-container">
@@ -31,15 +38,19 @@ export default function ShowHistory() {
   );
 }
 
+// Accordion component to display history items
 function Accordion({ data, LinktoOrder }) {
+  // State variable to track currently opened item
   const [curOpen, setCurOpen] = useState(null);
 
   return (
     <div>
       <div className="Head">
+        {/* Back button to navigate to the main page */}
         <p onClick={LinktoOrder}>
           <FaArrowLeft />
         </p>
+
         <h2 className="heading">History</h2>
       </div>
       <div className="accordion">
@@ -60,6 +71,7 @@ function Accordion({ data, LinktoOrder }) {
   );
 }
 
+// AccordionItem component to display individual history item
 function AccordionItem({
   title,
   checkPoint,
@@ -69,13 +81,16 @@ function AccordionItem({
   curOpen,
   onOpen,
 }) {
+  // State variables for fetched route data and image display
   const [fetchedRouteData, setFetchedRouteData] = useState(null);
   const [showImage, setShowImage] = useState(false);
   const [selectedImage, setSelectedImage] = useState("");
 
+  // Function to toggle accordion item open/close
   const isOpen = title === curOpen;
 
   function handleToggle() {
+    // Fetch route data if the item is opened
     if (!isOpen) {
       axios
         .get(
@@ -91,15 +106,18 @@ function AccordionItem({
     onOpen(isOpen ? null : title);
   }
 
+  // Function to handle image click
   function handleImageClick(imageData) {
     setSelectedImage(imageData);
     setShowImage(true);
   }
 
+  // Function to handle image modal close
   function handleCloseImage() {
     setShowImage(false);
   }
 
+  // Rendering individual AccordionItem component
   return (
     <div
       className={`item ${isOpen ? "open" : "closeing"}`}
@@ -113,6 +131,7 @@ function AccordionItem({
       </div>
       <p className="icon">{isOpen ? <FaCaretUp /> : <FaCaretDown />}</p>
 
+      {/* Display fetched route data if item is open */}
       {isOpen && fetchedRouteData && (
         <div className="his-box">
           <div className="line-box">
@@ -131,6 +150,7 @@ function AccordionItem({
               <p>{item.staffName}</p>
               <p>{item.checkpoint}</p>
 
+              {/* Display image if available */}
               {item.receivedImage ? (
                 <button
                   className="img-url"
@@ -146,7 +166,7 @@ function AccordionItem({
         </div>
       )}
 
-      {/* display the image */}
+      {/* Display image modal if showImage state is true */}
       {showImage && (
         <div className="modal">
           <div className="modal-content">
@@ -164,6 +184,7 @@ function AccordionItem({
   );
 }
 
+// Function to format time
 function formatTime(timeString) {
   const time = new Date(timeString);
   return time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
