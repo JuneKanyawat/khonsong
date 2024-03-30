@@ -11,14 +11,22 @@ const DeliveryInfo = () => {
   const [data, setData] = useState(null);
   const [restart, setRestart] = useState(null);
   const [updateRestart, setUpdateRestart] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [showImage, setShowImage] = useState(false);
 
   useEffect(() => {
     console.log("Fetching data...");
     const fetchData = async () => {
       try {
-        const response1 = await axios.get("http://ec2-54-82-55-108.compute-1.amazonaws.com:8080/deliverRoute/currentDeliver?deliverRouteID=1");
+        let response1;
+        if (!updateRestart) {
+          response1 = await axios.get("http://ec2-54-82-55-108.compute-1.amazonaws.com:8080/deliverRoute/currentDeliver?deliverRouteID=1");
+        }
+        
         const response2 = await axios.get("http://ec2-54-82-55-108.compute-1.amazonaws.com:8080/deliverRoute/restart?deliverRouteID=1");
 
+        console.log(response1);
+        
         const newData = response1.data.data.routesData.map(item => ({
           ...item,
           arrivedTime: item.arrivedTime || '-',
@@ -46,6 +54,20 @@ const DeliveryInfo = () => {
     return () => clearInterval(intervalId);
   }, []);
 
+  const handleImageClick = (imageData) => {
+    setSelectedImage(imageData);
+    setShowImage(true);
+  };
+
+  const handleCloseImage = () => {
+    setShowImage(false);
+  };
+
+  function formatTime(timeString) {
+    const time = new Date(timeString);
+    return time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+  }
+
   const checkRestart = () => {
     if (!restart) {
       alert = Swal.fire({
@@ -65,12 +87,26 @@ const DeliveryInfo = () => {
   };
 
   const categories = [
-    {name: 'Checkpoint', selector: row => row.checkpoint || '-'}, 
-    {name: 'Receiver', selector: row => row.staffName || '-'}, 
-    {name: 'Arrival Time', selector: row => row.arrivedTime || '-'}, 
-    {name: 'Received Time', selector: row => row.receivedTime || '-'}, 
-    {name: 'Order Status', selector: row => row.routeStatus || '-'},
-    {name: 'Image', selector: row => row.receivedImage || '-'} 
+    {name: 'Checkpoint', selector: row => row.checkpoint || '-', center: true }, 
+    {name: 'Receiver', 
+      cell: row => {
+        const [firstName, ...lastName] = row.staffName.split(' ');
+        const surname = lastName.join(' ');
+        return `${firstName}\n${surname}`;
+      }, center: true },  
+    {name: 'Arrival Time', selector: row => formatTime(row.arrivedTime) || '-', center: true }, 
+    {name: 'Received Time', selector: row => formatTime(row.receivedTime) || '-', center: true }, 
+    {name: 'Order Status', selector: row => row.routeStatus || '-', center: true },
+    {name: 'Image', 
+      cell: row => (
+        <button
+          className = "img-url"
+          onClick = {() => handleImageClick(row.receivedImage)}
+        >
+          View
+        </button>
+      ), center: true 
+    } 
   ];
 
   return (
@@ -88,6 +124,19 @@ const DeliveryInfo = () => {
           ></Datatable>
         )}
       </div>
+      {showImage && (
+        <div className = "modal">
+          <div className = "modal-content">
+            <span className = "close" onClick={handleCloseImage}>
+              &times;
+            </span>
+            <img
+              src = {`data:image/jpeg;base64,${selectedImage}`}
+              alt = "Received"
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
