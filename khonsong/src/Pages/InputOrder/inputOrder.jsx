@@ -147,7 +147,9 @@ const InputOrder = () => {
       {!staffValid && showConfirmBox && (
         <div className="popup-box">
           <p>No staff found</p>
-          <button onClick={handleClear}>Clear</button>
+          <button className="clear-btn" onClick={handleClear}>
+            Clear
+          </button>
         </div>
       )}
 

@@ -90,6 +90,15 @@
   row-gap: 2rem;
 }
 
+.img-url {
+  border: none;
+  border-radius: 8px;
+}
+
+.img-url:hover {
+  background-color: #d9d9d9;
+}
+
 .modal {
   display: block;
   position: fixed;

@@ -130,19 +130,23 @@ function AccordionItem({
               <p>{formatTime(item.receivedTime)}</p>
               <p>{item.staffName}</p>
               <p>{item.checkpoint}</p>
-              {/* Replace img tag with button */}
-              <button
-                className="img-url"
-                onClick={() => handleImageClick(item.receivedImage)}
-              >
-                View
-              </button>
+
+              {item.receivedImage ? (
+                <button
+                  className="img-url"
+                  onClick={() => handleImageClick(item.receivedImage)}
+                >
+                  View
+                </button>
+              ) : (
+                <p>No image</p>
+              )}
             </div>
           ))}
         </div>
       )}
 
-      {/* Modal to display the image */}
+      {/* display the image */}
       {showImage && (
         <div className="modal">
           <div className="modal-content">

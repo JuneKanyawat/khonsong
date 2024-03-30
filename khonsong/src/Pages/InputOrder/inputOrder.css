@@ -99,7 +99,16 @@ input:hover {
 .checkpoint {
   align-self: start;
 }
+.clear-btn {
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+}
 
+.clear-btn:hover {
+  background-color: #d9d9d9;
+}
 .add-btn {
   display: block;
   height: 3rem;
@@ -134,6 +143,7 @@ input:hover {
 }
 .popup-box {
   display: flex;
+  align-items: center;
 }
 
 .popup-box p {
@@ -164,6 +174,7 @@ input:hover {
 
 .confirmation-box {
   grid-column: -4/-1;
+  padding: 1.6rem;
 }
 
 .confirmation-box button {
