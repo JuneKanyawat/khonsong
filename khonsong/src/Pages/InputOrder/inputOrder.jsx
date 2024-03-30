@@ -42,14 +42,22 @@ const InputOrder = () => {
   const handleUserIdChange = (event) => {
     setUserId(event.target.value);
     setShowConfirmBox(false);
-    setStaffValid(true); // Reset staff validity when user changes the ID
+    setStaffValid(true);
   };
 
   const handleItemClick = (index, state) => {
-    const updated = [...dropdowns];
-    updated[index].selectedState = state;
-    updated[index].isOpen = false;
-    setDropdowns(updated);
+    const isStateAlreadySelected = dropdowns.some((dropdown, i) => {
+      return i !== index && dropdown.selectedState === state;
+    });
+
+    if (isStateAlreadySelected) {
+      alert("Option already selected in another dropdown.");
+    } else {
+      const updated = [...dropdowns];
+      updated[index].selectedState = state;
+      updated[index].isOpen = false;
+      setDropdowns(updated);
+    }
   };
 
   const handleToggleDropdown = (index) => {
@@ -157,7 +165,9 @@ const InputOrder = () => {
         <>
           <div
             className="img"
-            style={{ backgroundImage: `url("${data.staffPhoto}")` }}
+            style={{
+              backgroundImage: `url("data:image/jpeg;base64,${data.staffPhoto}")`,
+            }}
           ></div>
 
           <label>Staff Name :</label>
