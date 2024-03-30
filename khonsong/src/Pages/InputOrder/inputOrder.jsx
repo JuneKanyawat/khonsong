@@ -195,7 +195,10 @@ const InputOrder = () => {
           <div
             className="img"
             style={{
-              backgroundImage: `url("data:image/jpeg;base64,${data.staffPhoto}")`,
+              backgroundImage: data.staffPhoto
+                ? `url("data:image/jpeg;base64,${data.staffPhoto}")`
+                : "none",
+              backgroundColor: data.staffPhoto ? "transparent" : "#ffd166",
             }}
           ></div>
 
