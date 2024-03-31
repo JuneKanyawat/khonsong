@@ -2,47 +2,68 @@ import React, { useState, useEffect } from "react";
 import "./deliveryInfo.css";
 import Datatable from 'react-data-table-component'
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import Swal from 'sweetalert2'
+import { BiCheck, BiX, BiHomeAlt2 } from "react-icons/bi";
 
 const DeliveryInfo = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { routeId, checkpoints } = location.state;
+  const steps = ["Origin", ...checkpoints];
+  // console.log(steps);
 
   const [data, setData] = useState(null);
   const [restart, setRestart] = useState(null);
   const [updateRestart, setUpdateRestart] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null);
   const [showImage, setShowImage] = useState(false);
+  const [currStep, setCurrStep] = useState(1);
+  const [complete, setComplete] = useState(Array(checkpoints.length).fill(false));
+
 
   useEffect(() => {
     console.log("Fetching data...");
     const fetchData = async () => {
       try {
         let response1;
+        let response2;
         if (!updateRestart) {
-          response1 = await axios.get("http://ec2-54-82-55-108.compute-1.amazonaws.com:8080/deliverRoute/currentDeliver?deliverRouteID=1");
+          response1 = await axios.get(`http://ec2-54-82-55-108.compute-1.amazonaws.com:8080/deliverRoute/currentDeliver?deliverRouteID=1`);
+
+          const routeData = response1.data.data.routesData;
+          const newData = routeData.map(item => ({
+            ...item,
+            arrivedTime: item.arrivedTime || '-',
+            receivedTime: item.receivedTime || '-',
+            staffName: item.staffName || '-',
+            receivedImage: item.receivedImage || '-',
+          }));
+
+          setData(newData); 
+          console.log(newData);
+
+          const completeData = routeData.map(route => route.routeStatus === "complete");;
+          console.log(completeData)
+          setComplete(completeData);
+
+          const allComplete = newData.every(item => item.routeStatus === "complete");
+          console.log(allComplete);
+          if (allComplete) {
+            setUpdateRestart(true);
+            console.log("Restart!");
+            setCurrStep(1);
+            checkRestart();
+          }
+
+        } else {
+          response2 = await axios.get(`http://ec2-54-82-55-108.compute-1.amazonaws.com:8080/deliverRoute/restart?deliverRouteID=1`);
+
+          const restartValue = response2.data.data.restart;
+
+          setRestart(restartValue); 
+          console.log(restartValue);
         }
-        
-        const response2 = await axios.get("http://ec2-54-82-55-108.compute-1.amazonaws.com:8080/deliverRoute/restart?deliverRouteID=1");
-
-        console.log(response1);
-        
-        const newData = response1.data.data.routesData.map(item => ({
-          ...item,
-          arrivedTime: item.arrivedTime || '-',
-          receivedTime: item.receivedTime || '-',
-          staffName: item.staffName || '-',
-          receivedImage: item.receivedImage || '-',
-        }));
-
-        const restartValue = response2.data.data.restart;
-
-        setData(newData);
-        setRestart(restartValue); 
-        console.log(newData);
-        console.log(restartValue);
-
-        // const allComplete = newData.every(item => item.routeStatus === "complete");}
 
       } catch (error) {
         console.error("Error fetching data: ", error);
@@ -52,7 +73,7 @@ const DeliveryInfo = () => {
     fetchData();
     const intervalId = setInterval(fetchData, 2000);
     return () => clearInterval(intervalId);
-  }, []);
+  }, [updateRestart]);
 
   const handleImageClick = (imageData) => {
     setSelectedImage(imageData);
@@ -69,21 +90,22 @@ const DeliveryInfo = () => {
   }
 
   const checkRestart = () => {
-    if (!restart) {
-      alert = Swal.fire({
-        title: "Alert!",
-        html: "This alert will stay open until restart is true.",
-        showConfirmButton: false, 
-        didOpen: () => {
-          Swal.showLoading();
-        }
-      });
-    } else {
-      if (alert) {
-        Swal.close();
-        navigate('/');
+    Swal.fire({
+      title: "Delivery Completed!",
+      icon: "success",
+      html: "returning to origin...",
+      showConfirmButton: false,
+      didOpen: () => {
+        const checkRestartInterval = setInterval(() => {
+          if (restart) {
+            clearInterval(checkRestartInterval);
+            Swal.close();
+            setUpdateRestart(false);
+            navigate('/');
+          }
+        }, 100);
       }
-    }
+    });    
   };
 
   const categories = [
@@ -113,6 +135,25 @@ const DeliveryInfo = () => {
     <div>
       <div className = "container1">
         <h1> Status </h1>
+        <div className = "stepper">
+          {steps?.map((step, i) => (
+            <div
+              key={i}
+              className={`step-item ${currStep === i + 1 && "active"} ${complete[i] && "complete"}`}
+            >
+              <div className={`step ${i === 0 ? "origin" : ""} ${complete[i] ? "complete" : ""}`}>
+                {i === 0 ? (
+                  <BiHomeAlt2 size = {20} /> 
+                ) : complete[i] ? (
+                  <BiCheck size = {24} /> 
+                ) : (
+                  <BiX size = {24} /> 
+                )}
+              </div>
+              <p>{step}</p>
+            </div>
+          ))}
+        </div>
       </div>
 
       <div className = "container2">

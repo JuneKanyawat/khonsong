@@ -26,7 +26,8 @@
 
 .container1 h1 {
   text-align: center;
-  font-size: 20px;
+  font-size: 22px;
+  padding: 1%;
 }
 
 .container2 h1 {
@@ -34,7 +35,7 @@
   margin-bottom: 1rem;
   text-align: left;
   padding-left: 1rem;
-  font-size: 20px;
+  font-size: 22px;
 }
 
 .img-url {
@@ -78,4 +79,58 @@
 .modal-content img {
   max-width: 100%;
   max-height: 80vh;
+}
+
+.stepper {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+}
+
+.stepper::before {
+  content: "";
+  position: absolute;
+  top: 35%;
+  left: 15%;
+  transform: translateY(-50%);
+  height: 3px;
+  width: 70%; 
+  background-color: #000; 
+  z-index: 5; 
+}
+
+.step-item {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 30%;
+  font-size: medium;
+  font-weight: 550;
+  padding: 1%;
+}
+
+.step {
+  width: 4rem;
+  height: 4rem;
+  margin-bottom: 5%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  position: relative;
+  background-color: #d34f34;
+  border-radius: 9999px;
+  font-weight: 600;
+  color: #fff;
+  border: 3.5px solid #000;
+}
+
+.step.complete {
+  background-color: #44b75f; 
+}
+
+.step.origin {
+  background-color: #5e95cf; 
 }

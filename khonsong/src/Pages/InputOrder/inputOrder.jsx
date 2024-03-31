@@ -103,7 +103,8 @@ const InputOrder = () => {
       )
       .then((response) => {
         console.log("Route created successfully:", response.data);
-        navigate("/status");
+        const deliverRouteID = response.data.data.deliverRouteID;
+        navigate("/status", { state: { routeId: deliverRouteID, checkpoints: routeData.checkpointsList} });
 
         setUserId("");
         setDropdowns([{ selectedState: "", isOpen: false }]);
