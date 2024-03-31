@@ -29,7 +29,7 @@ const DeliveryInfo = () => {
         let response1;
         let response2;
         if (!updateRestart) {
-          response1 = await axios.get(`http://ec2-54-82-55-108.compute-1.amazonaws.com:8080/deliverRoute/currentDeliver?deliverRouteID=1`);
+          response1 = await axios.get(`http://ec2-54-82-55-108.compute-1.amazonaws.com:8080/deliverRoute/currentDeliver?deliverRouteID=${userId}`);
 
           const routeData = response1.data.data.routesData;
           const newData = routeData.map(item => ({
@@ -57,7 +57,7 @@ const DeliveryInfo = () => {
           }
 
         } else {
-          response2 = await axios.get(`http://ec2-54-82-55-108.compute-1.amazonaws.com:8080/deliverRoute/restart?deliverRouteID=1`);
+          response2 = await axios.get(`http://ec2-54-82-55-108.compute-1.amazonaws.com:8080/deliverRoute/restart?deliverRouteID=${userId}`);
 
           const restartValue = response2.data.data.restart;
 
