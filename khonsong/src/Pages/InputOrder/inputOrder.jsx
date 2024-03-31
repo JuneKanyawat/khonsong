@@ -1,27 +1,35 @@
 import React, { useState, useEffect } from "react";
 import "./inputOrder.css";
 import DropdownMenu from "../../Component/DropdownMenu/dropdownMenu.jsx";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import axios from "axios"; // Importing Axios for making HTTP requests
+import { useNavigate } from "react-router-dom"; // Importing useNavigate for navigation
 
 const InputOrder = () => {
+  // Hook for navigation
   const navigate = useNavigate();
+
+  // Function to navigate to the history page
   const LinktoHistory = () => {
     navigate("/history");
   };
 
-  const [userId, setUserId] = useState("");
-  const [showConfirmBox, setShowConfirmBox] = useState(false);
+  // State variables
+  const [userId, setUserId] = useState(""); // State for storing user ID
+  const [showConfirmBox, setShowConfirmBox] = useState(false); // State for showing confirmation box
   const [dropdowns, setDropdowns] = useState([
     { selectedState: "", isOpen: false },
-  ]);
-  const states = ["Point A", "Point B", "Point C"];
-  const [data, setData] = useState({});
-  const [staffValid, setStaffValid] = useState(true);
+  ]); // State for dropdown menus
+  const states = ["Point A", "Point B", "Point C"]; // Array of checkpoint options
+  const [data, setData] = useState({}); // State for storing staff data
+  const [staffValid, setStaffValid] = useState(true); // State for validating staff
 
+  // useEffect hook for fetching staff data when user ID changes
   useEffect(() => {
     if (userId !== "") {
+      // API endpoint URL for fetching staff data
       const url = `http://ec2-54-82-55-108.compute-1.amazonaws.com:8080/staff/name?staffID=${userId}`;
+
+      // Axios GET request to fetch staff data
       axios
         .get(url)
         .then((res) => {
@@ -37,33 +45,46 @@ const InputOrder = () => {
           setStaffValid(false);
         });
     }
-  }, [showConfirmBox, userId]);
+  }, [showConfirmBox, userId]); // Dependency array to trigger effect on showConfirmBox and userId changes
 
+  // Event handler for user ID input change
   const handleUserIdChange = (event) => {
     setUserId(event.target.value);
     setShowConfirmBox(false);
-    setStaffValid(true); // Reset staff validity when user changes the ID
+    setStaffValid(true);
   };
 
+  // Event handler for selecting a checkpoint from dropdown
   const handleItemClick = (index, state) => {
-    const updated = [...dropdowns];
-    updated[index].selectedState = state;
-    updated[index].isOpen = false;
-    setDropdowns(updated);
+    const isStateAlreadySelected = dropdowns.some((dropdown, i) => {
+      return i !== index && dropdown.selectedState === state;
+    });
+
+    if (isStateAlreadySelected) {
+      alert("Option already selected in another dropdown.");
+    } else {
+      const updated = [...dropdowns];
+      updated[index].selectedState = state;
+      updated[index].isOpen = false;
+      setDropdowns(updated);
+    }
   };
 
+  // Event handler for toggling dropdown menu visibility
   const handleToggleDropdown = (index) => {
     const updated = [...dropdowns];
     updated[index].isOpen = !updated[index].isOpen;
     setDropdowns(updated);
   };
 
+  // Event handler for adding a new dropdown menu
   const handleAddDropdown = () => {
     if (dropdowns.length < 3) {
       setDropdowns([...dropdowns, { selectedState: "", isOpen: false }]);
     }
   };
 
+  // Event handler for deleting a dropdown menu
   const handleDeleteDropdown = (index) => {
     if (index !== 0) {
       const updated = [...dropdowns];
@@ -72,13 +93,20 @@ const InputOrder = () => {
     }
   };
 
+  // Event handler for showing confirmation box
   const handleShowConfirmBox = () => {
     setShowConfirmBox(true);
   };
 
+  // Event handler for processing order and navigating to the next step
   const handleNext = () => {
     if (!staffValid) {
       alert("No staff found with the given ID.");
+      return;
+    }
+    // Check if any dropdown menu is blank
+    if (dropdowns.some((dropdown) => dropdown.selectedState === "")) {
+      alert("Please select all checkpoint for all menus :)");
       return;
     }
 
@@ -86,6 +114,7 @@ const InputOrder = () => {
     const lastAlphabet = lastCheckpoint.charAt(lastCheckpoint.length - 1);
     const startTime = new Date().toISOString();
 
+    // Data for creating a route
     const routeData = {
       startTime: startTime,
       checkpointsList: dropdowns
@@ -95,7 +124,8 @@ const InputOrder = () => {
         .sort(),
       issuedBy: userId,
     };
-    console.log(routeData);
+
+    // Axios POST request to create route
     axios
       .post(
         "http://ec2-54-82-55-108.compute-1.amazonaws.com:8080/deliverRoute/create",
@@ -106,6 +136,7 @@ const InputOrder = () => {
         const deliverRouteID = response.data.data.deliverRouteID;
         navigate("/status", { state: { routeId: deliverRouteID, checkpoints: routeData.checkpointsList} });
 
+        // Resetting state variables
         setUserId("");
         setDropdowns([{ selectedState: "", isOpen: false }]);
         setShowConfirmBox(false);
@@ -115,12 +146,14 @@ const InputOrder = () => {
       });
   };
 
+  // Event handler for canceling order input
   const handleCancel = () => {
     setUserId("");
     setDropdowns([{ selectedState: "", isOpen: false }]);
     setShowConfirmBox(false);
   };
 
+  // Event handler for clearing input fields
   const handleClear = () => {
     setUserId("");
     setStaffValid(true);
@@ -129,6 +162,7 @@ const InputOrder = () => {
 
   return (
     <div className="container">
+      {/* Input field for staff ID */}
       <label>Staff ID :</label>
       <input
         className="input"
@@ -137,6 +171,7 @@ const InputOrder = () => {
         onChange={handleUserIdChange}
       />
 
+      {/* Confirmation box for proceeding with the input */}
       {userId && !showConfirmBox && (
         <div className="confirmation-box">
           <p>Do you want to proceed?</p>
@@ -145,6 +180,7 @@ const InputOrder = () => {
         </div>
       )}
 
+      {/* Popup box for indicating invalid staff ID */}
       {!staffValid && showConfirmBox && (
         <div className="popup-box">
           <p>No staff found</p>
@@ -154,11 +190,17 @@ const InputOrder = () => {
         </div>
       )}
 
+      {/* Display staff details and checkpoint selection */}
       {staffValid && showConfirmBox && (
         <>
           <div
             className="img"
-            style={{ backgroundImage: `url("${data.staffPhoto}")` }}
+            style={{
+              backgroundImage: data.staffPhoto
+                ? `url("data:image/jpeg;base64,${data.staffPhoto}")`
+                : "none",
+              backgroundColor: data.staffPhoto ? "transparent" : "#ffd166",
+            }}
           ></div>
 
           <label>Staff Name :</label>
@@ -168,6 +210,7 @@ const InputOrder = () => {
             <div>
               {dropdowns.map((dropdown, index) => (
                 <div key={index} className="cont">
+                  {/* Dropdown menu component */}
                   <DropdownMenu
                     selectedState={dropdown.selectedState}
                     isOpen={dropdown.isOpen}
@@ -176,6 +219,7 @@ const InputOrder = () => {
                     states={states}
                   />
 
+                  {/* Buttons for adding/deleting dropdown menus */}
                   {index === 0 ? (
                     <button className="add-btn" onClick={handleAddDropdown}>
                       +
@@ -193,12 +237,16 @@ const InputOrder = () => {
             </div>
           </div>
 
+          {/* Link to history page */}
           <p className="history-text" onClick={LinktoHistory}>
             History
           </p>
+
+          {/* Buttons for canceling, clearing, and proceeding to the next step */}
           <button className="btn-cancel" onClick={handleCancel}>
             Cancel
           </button>
+
           {/* Conditionally render the "Next" button */}
           {dropdowns.some((dropdown) => dropdown.selectedState !== "") && (
             <button className="btn-next" onClick={handleNext}>
