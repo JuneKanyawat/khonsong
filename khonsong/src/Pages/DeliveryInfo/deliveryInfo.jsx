@@ -19,7 +19,8 @@ const DeliveryInfo = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [showImage, setShowImage] = useState(false);
   const [currStep, setCurrStep] = useState(1);
-  const [complete, setComplete] = useState(Array(checkpoints.length).fill(false));
+  const [complete, setComplete] = useState([true, ...Array(checkpoints.length).fill(false)]);
+
 
 
   useEffect(() => {
@@ -29,7 +30,7 @@ const DeliveryInfo = () => {
         let response1;
         let response2;
         if (!updateRestart) {
-          response1 = await axios.get(`http://ec2-54-82-55-108.compute-1.amazonaws.com:8080/deliverRoute/currentDeliver?deliverRouteID=${userId}`);
+          response1 = await axios.get(`http://ec2-54-82-55-108.compute-1.amazonaws.com:8080/deliverRoute/currentDeliver?deliverRouteID=${routeId}`);
 
           const routeData = response1.data.data.routesData;
           const newData = routeData.map(item => ({
@@ -40,29 +41,41 @@ const DeliveryInfo = () => {
             receivedImage: item.receivedImage || '-',
           }));
 
-          setData(newData); 
-          console.log(newData);
+          const filteredData = newData.filter(item => checkpoints.includes(item.checkpoint));
 
-          const completeData = routeData.map(route => route.routeStatus === "complete");;
-          console.log(completeData)
-          setComplete(completeData);
+          setData(filteredData); 
+          console.log(filteredData);
 
-          const allComplete = newData.every(item => item.routeStatus === "complete");
-          console.log(allComplete);
+          const newCompleteData = checkpoints.map(checkpoint =>
+            newData.some(item => item.checkpoint === checkpoint && item.routeStatus === "complete")
+          );
+          newCompleteData.unshift(true);
+          setComplete(newCompleteData);
+          console.log(complete);
+          console.log(newCompleteData);
+
+          const allComplete = newCompleteData.every(status => status);
+          // console.log(allComplete);
           if (allComplete) {
             setUpdateRestart(true);
-            console.log("Restart!");
+            // console.log("Restart!");
             setCurrStep(1);
             checkRestart();
           }
 
         } else {
-          response2 = await axios.get(`http://ec2-54-82-55-108.compute-1.amazonaws.com:8080/deliverRoute/restart?deliverRouteID=${userId}`);
+          response2 = await axios.get(`http://ec2-54-82-55-108.compute-1.amazonaws.com:8080/deliverRoute/restart?deliverRouteID=${routeId}`);
 
           const restartValue = response2.data.data.restart;
 
           setRestart(restartValue); 
           console.log(restartValue);
+
+          if (restartValue) {
+            console.log("Restart!");
+            Swal.close();
+            navigate('/');
+          }
         }
 
       } catch (error) {
@@ -97,12 +110,10 @@ const DeliveryInfo = () => {
       showConfirmButton: false,
       didOpen: () => {
         const checkRestartInterval = setInterval(() => {
-          if (restart) {
-            clearInterval(checkRestartInterval);
-            Swal.close();
-            setUpdateRestart(false);
-            navigate('/');
-          }
+          // if (restart) {
+          //   console.log(restart);
+          //   Swal.close();
+          // }
         }, 100);
       }
     });    
