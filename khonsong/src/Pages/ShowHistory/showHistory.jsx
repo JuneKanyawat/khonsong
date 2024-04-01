@@ -186,6 +186,9 @@ function AccordionItem({
 
 // Function to format time
 function formatTime(timeString) {
+  if (timeString === null) {
+    return " ";
+  }
   const time = new Date(timeString);
   return time.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
 }
